@@ -6,8 +6,11 @@ import RightTopButton from '../../components/RightTopButton/RightTopButton';
 import { useInput } from "../../hooks/useInput";
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function SignupPage() {
+    const navigate = useNavigate();
+
     const [ username, setUsername, userNameChange ] = useInput();
     const [ password, setPassword, passwordChange ] = useInput();
     const [ checkPassword, setCheckPassword, checkPasswordChange ] = useInput();
@@ -78,7 +81,9 @@ function SignupPage() {
     const signupRequest = async (signupData) => {
         try {
             const response = await axios.post("http://localhost:8080/auth/signup", signupData);
-            console.log(response);
+            if(response.data) {
+                navigate("/auth/signin");
+            }
         } catch(error) {   
             const errorMap = error.response.data;
             const entries = Object.entries(errorMap);
