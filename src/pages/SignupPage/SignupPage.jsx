@@ -12,7 +12,7 @@ import { signupRequest } from "../../apis/api/signup";
 function SignupPage() {
     const navigate = useNavigate();
 
-    const [ username, userNameChange, usernameMessage ] = useInput("username");
+    const [ username, userNameChange, usernameMessage, setUsernameValue, setUsernameMessage ] = useInput("username");
     const [ password, passwordChange, passwordMessage ] = useInput("password");
     const [ checkPassword, checkPasswordChange ] = useInput("checkPassword");
     const [ name, nameChange, nameMessage ] = useInput("name");
@@ -65,10 +65,25 @@ function SignupPage() {
             console.log(response);
             if(response.status === 201){
                 navigate("/auth/signin");
+            }
+        }).catch(error => {
+            if(error.response.status === 400) {
+                const errorMap = error.response.data;
+                const errorEntries = Object.entries(errorMap);
+                for(let [ k, v ] of errorEntries) {
+                    if(k === "username") {
+                        setUsernameMessage(() => {
+                            return {
+                                type: "error",
+                                text: v
+                            }
+                        })
+                    }
+                }
             } else {
                 alert("회원가입 오류");
             }
-        })
+        });
     }
 
     return (

@@ -37,5 +37,5 @@ export const useInput = (property) => {
         setValue(() => e.target.value);
     }
 
-    return [ value, handleOnChange, message, setValue ];
+    return [ value, handleOnChange, message, setValue, setMessage ];
 }
