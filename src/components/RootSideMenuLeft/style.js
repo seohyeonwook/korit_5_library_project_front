@@ -84,7 +84,7 @@ export const settings = css`
     }
 `;
 
-export const profileImgBox = css`
+export const profileBox = css`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -101,6 +101,20 @@ export const profileImg = css`
     width: 60px;
     height: 60px;
     background-color: white;
+`;
+
+export const usernameAndEmail = css`
+    display: flex;
+    flex-direction: column;
+    margin-left: 5px;
+    cursor: default;
+
+    & > span:nth-of-type(1) {
+        font-weight: 600;
+    }
+    & > span:nth-of-type(2) {
+        font-size: 12px;
+    }
 `;
 
 export const menuList = css`
