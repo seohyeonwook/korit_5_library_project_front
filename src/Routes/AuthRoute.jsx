@@ -23,7 +23,7 @@ function AuthRoute(props) {
     
     const principalQuery = useQuery(["principalQuery"], getPrincipalRequest, 
     {
-        retry: 3,
+        retry: 0,
         refetchOnWindowFocus: false,
         onSuccess: response => {
             console.log("onSuccess");

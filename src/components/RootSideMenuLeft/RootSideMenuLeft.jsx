@@ -4,9 +4,20 @@ import * as s from "./style";
 import { HiMenu } from "react-icons/hi";
 import { menuState } from "../../atoms/menuAtom";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useQueryClient } from "react-query";
+import { RiSettings4Line } from "react-icons/ri";
+import { FiUser } from "react-icons/fi";
 
 function RootSideMenuLeft() {
     const [ show, setShow ] = useRecoilState(menuState);
+    const [ isLogin, setLogin ] = useState(false);
+    const queryClient = useQueryClient();
+    const principalQueryState = queryClient.getQueryState("principalQuery");
+
+    useEffect(() => {
+        setLogin(() => principalQueryState.status === "success");
+    }, [principalQueryState.status]);
 
     const handleCloseClick = () => {
         setShow(() => false);
@@ -21,7 +32,28 @@ function RootSideMenuLeft() {
             </div>
 
             <div css={s.profile}>
-
+                { !isLogin
+                    ?
+                    <div css={s.authButtons}>
+                        <button>로그인</button>
+                        <button>회원가입</button>
+                    </div>
+                    :    
+                    <>
+                        <div css={s.settings}>
+                            <RiSettings4Line />
+                        </div>
+                        <div css={s.profileImgBox}>
+                            <div css={s.profileImg}>
+                                <FiUser />
+                            </div>
+                        </div>
+                        <div>
+                            <span>{principalQueryState.data.data.username}</span>
+                            <span>{principalQueryState.data.data.email}</span>
+                        </div>
+                    </>
+                }   
             </div>
 
             <div css={s.menuList}>
