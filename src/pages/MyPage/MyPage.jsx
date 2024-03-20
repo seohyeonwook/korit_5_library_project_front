@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import * as s from "./style";
 import { sendAuthMailRequest } from "../../apis/api/sendAuthMail";
 import FullSizeLoader from "../../components/FullSizeLoader/FullSizeLoader";
+import { GoCheckCircle } from "react-icons/go";
 
 function MyPage() {
     const queryClient = useQueryClient();
@@ -47,12 +48,12 @@ function MyPage() {
                                     ?
                                     <button css={s.infoButton} onClick={handleSendAuthMailClick}>인증하기</button>
                                     :
-                                    <>체크</>
+                                    <div css={s.emailCheck}><GoCheckCircle /></div>
                                 }
                             </div>
-                            <div>
-                                <button>정보 수정</button>
-                                <button>비밀번호 수정</button>
+                            <div css={s.infoButtons}>
+                                <button css={s.infoButton}>정보 수정</button>
+                                <button css={s.infoButton}>비밀번호 수정</button>
                             </div>
                         </div>
                     </div>
