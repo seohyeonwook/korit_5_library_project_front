@@ -16,6 +16,7 @@ function OAuth2MergePage() {
         mutationKey: "oAuth2MergeMutation",
         mutationFn: oAtuh2MergeRequest,
         onSuccess: response => {
+            console.log(response)
             alert("계정 통합이 완료되었습니다.\n다시 로그인 하세요.");
             window.location.replace("/auth/signin");
         },
