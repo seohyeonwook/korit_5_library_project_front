@@ -10,16 +10,16 @@ const inputBox = css`
     width: 100%;
 `;
 
-function BookRegisterInput({ value, onChange, onKeyUp, bookRef }) {
-    
+function BookRegisterInput({ value, onChange, onKeyDown, bookref }) {
+
     return (
         <input 
             css={inputBox}
             type="text" 
             value={value} 
             onChange={onChange} 
-            onKeyUp={onKeyUp}
-            ref={bookRef}
+            onKeyDown={onKeyDown}
+            ref={bookref}
         />
     );
 }
