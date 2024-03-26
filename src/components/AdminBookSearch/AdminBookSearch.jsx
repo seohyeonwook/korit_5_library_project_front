@@ -10,11 +10,13 @@ import { useSearchParams } from "react-router-dom";
 
 function AdminBookSearch({ selectStyle, bookTypeOptions, categoryOptions }) {
     const [ searchParams ] = useSearchParams();
+    const searchCount = 20;
 
     const searchBooksQuery = useQuery(
         ["searchBooksQuery", searchParams.get("page")],
         async () => await searchBooksRequest({
             page: searchParams.get("page"),
+            count: searchCount,
             bookTypeId: selectedBookType.option.value,
             categoryId: selectedCategory.option.value,
             searchTypeId: selectedSearchType.option.value,
