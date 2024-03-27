@@ -2,20 +2,44 @@
 import Select from "react-select";
 import * as s from "./style";
 import { useQuery, useQueryClient } from "react-query";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useReactSelect } from "../../hooks/useReactSelect";
 import { useBookRegisterInput } from "../../hooks/useBookRegisterInput";
-import { searchBooksRequest } from "../../apis/api/bookApi";
+import { getBookCountRequest, searchBooksRequest } from "../../apis/api/bookApi";
 import { useSearchParams } from "react-router-dom";
+import AdminBookSearchPageNumbers from "../AdminBookSearchPageNumbers/AdminBookSearchPageNumbers";
 
 function AdminBookSearch({ selectStyle, bookTypeOptions, categoryOptions }) {
-    const [ searchParams ] = useSearchParams();
+    const [ searchParams, setSearchParams ] = useSearchParams();
     const searchCount = 20;
+    const [ bookList, setBookList ] = useState([]);
 
     const searchBooksQuery = useQuery(
         ["searchBooksQuery", searchParams.get("page")],
         async () => await searchBooksRequest({
             page: searchParams.get("page"),
+            count: searchCount,
+            bookTypeId: selectedBookType.option.value,
+            categoryId: selectedCategory.option.value,
+            searchTypeId: selectedSearchType.option.value,
+            searchText: searchText.value
+        }),
+        {
+            refetchOnWindowFocus: false,
+            onSuccess: response => {
+                setBookList(() => response.data.map(book => {
+                    return {
+                        ...book,
+                        checked: false
+                    }
+                }));
+            }
+        }
+    );
+
+    const getBookCountQuery = useQuery(
+        ["getBookCountQuery", searchBooksQuery.data],
+        async () => await getBookCountRequest({
             count: searchCount,
             bookTypeId: selectedBookType.option.value,
             categoryId: selectedCategory.option.value,
@@ -31,6 +55,9 @@ function AdminBookSearch({ selectStyle, bookTypeOptions, categoryOptions }) {
     );
 
     const searchSubmit = () => {
+        setSearchParams({
+            page: 1
+        })
         searchBooksQuery.refetch();
     }
 
@@ -56,6 +83,10 @@ function AdminBookSearch({ selectStyle, bookTypeOptions, categoryOptions }) {
             outline: "none",
             boxShadow: "none"
         })
+    }
+
+    const handleCheckOnChange = (e) => {
+        const bookId = e.target.value;
     }
 
     return (
@@ -95,7 +126,7 @@ function AdminBookSearch({ selectStyle, bookTypeOptions, categoryOptions }) {
                 <table css={s.table}>
                     <thead>
                         <tr css={s.theadTr}>
-                            <th><input type="checkbox" /></th>
+                            <th><input type="checkbox" checked={true} /></th>
                             <th>코드번호</th>
                             <th>도서명</th>
                             <th>저자명</th>
@@ -103,105 +134,33 @@ function AdminBookSearch({ selectStyle, bookTypeOptions, categoryOptions }) {
                             <th>ISBN</th>
                             <th>도서형식</th>
                             <th>카테고리</th>
+                            <th>표지URL</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" /></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
+                        {
+                            bookList.map(
+                                (book, index) => 
+                                <tr key={book.bookId}>
+                                    <td><input type="checkbox" value={book.bookId} checked={book.checked} onChange={null}/></td>
+                                    <td>{book.bookId}</td>
+                                    <td>{book.bookName}</td>
+                                    <td>{book.authorName}</td>
+                                    <td>{book.publisherName}</td>
+                                    <td>{book.isbn}</td>
+                                    <td>{book.bookTypeName}</td>
+                                    <td>{book.categoryName}</td>
+                                    <td>{book.coverImgUrl}</td>
+                                </tr>
+                            )
+                        }
                     </tbody>
                 </table>
             </div>
-            <div>
-
-            </div>
+            {
+               !getBookCountQuery.isLoading &&
+               <AdminBookSearchPageNumbers bookCount={getBookCountQuery.data?.data}/>
+            }
         </div>
     );
 }
