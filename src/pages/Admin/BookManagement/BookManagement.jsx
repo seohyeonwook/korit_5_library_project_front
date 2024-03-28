@@ -11,7 +11,7 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../../../apis/firebase/config/firebaseConfig";
 import { v4 as uuid } from "uuid";
 import RightTopButton from "../../../components/RightTopButton/RightTopButton";
-import { registerBook } from "../../../apis/api/bookApi";
+import { registerBook, updateBookRequest } from "../../../apis/api/bookApi";
 import AdminBookSearch from "../../../components/AdminBookSearch/AdminBookSearch";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { selectedBookState } from "../../../atoms/adminSelectedBookAtom";
@@ -82,11 +82,17 @@ function BookManagement(props) {
             onSuccess: response => {
                 alert("추가완료.");
                 window.location.replace("/admin/book/management?page=1");
-            },
-            onError: error => {
-                
             }
         }); 
+    
+    const updateBookMuTation = useMutation({
+        mutationKey: "updateBookMuTation",
+        mutationFn: updateBookRequest,
+        onSuccess: response => {
+            alert("수정완료.");
+            window.location.reload();
+        }
+    })
 
     const nextInput = (ref) => {
         ref.current.focus();
@@ -104,7 +110,16 @@ function BookManagement(props) {
                 coverImgUrl: imgUrl.value
             });
         } else if(actionStatus === 2) {
-
+            updateBookMuTation.mutate({
+                bookId: bookId.value,
+                isbn: isbn.value,
+                bookTypeId: bookTypeId.value.value,
+                categoryId: categoryId.value.value,
+                bookName: bookName.value,
+                authorName: authorName.value,
+                publisherName: publisherName.value,
+                coverImgUrl: imgUrl.value
+            })
         } else if(actionStatus === 3) {
             setDelete(() => true);
         }
