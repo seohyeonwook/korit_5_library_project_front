@@ -4,7 +4,7 @@ export const registerBook = async (data) => {
     return await instance.post("/admin/book", data);
 }
 
-export const searchBooksRequest = async (params) => {
+export const searchBooksRequest = async (params) => {// date는 어디서 담기는 거지?? useQuery get여ㅓㅇ
     return await instance.get("/admin/books", {params});
 }
 

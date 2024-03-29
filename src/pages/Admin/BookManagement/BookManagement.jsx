@@ -18,7 +18,7 @@ import { selectedBookState } from "../../../atoms/adminSelectedBookAtom";
 
 function BookManagement(props) {
     const [ bookTypeOptions, setBookTypeOptions ] = useState([]);
-    const [ categoryOptions, setCategoryOptions ] = useState([]);
+    const [ categoryOptions, setCategoryOptions ] = useState([]);// 세터에 넣으면 상태가 바뀌니까 재랜더링이 일어난다
     const [ actionStatus, setActionStatus ] = useState(0);  // 0 = 선택, 1 = 추가, 2 = 수정, 3 = 삭제
     const [ isDelete, setDelete ] = useState(false);
     const fileRef = useRef();
@@ -31,7 +31,7 @@ function BookManagement(props) {
         useRef(),   // 5 저자명
         useRef(),   // 6 출판사
         useRef()    // 7 URL
-    ];
+    ];// 마운트가 일어나면 변수할당/함수선언(정의)이 실행된다
     
     // const ir1=    useRef()   // 0 bookId
     // const ir2=   useRef()   // 1 isbn
@@ -42,7 +42,7 @@ function BookManagement(props) {
     // const ir7=    useRef()   // 6 출판사
     // const ir8=    useRef()    // 7 URL
     
-    const bookTypeQuery = useQuery(
+    const bookTypeQuery = useQuery(// 이건get이라서 마운트될때 바로실행
         ["bookTypeQuery"], 
         getAllBookTypeRequest,
         {
@@ -76,7 +76,7 @@ function BookManagement(props) {
         }
         );
         
-        const registerBookMutation = useMutation({
+        const registerBookMutation = useMutation({// 얘는 .mutate해야만 실행됨
             mutationKey: "registerBookMutation",
             mutationFn: registerBook,
             onSuccess: response => {
@@ -98,7 +98,7 @@ function BookManagement(props) {
         ref.current.focus();
     }
     
-    const submit = () => {
+    const submit = () => {// 얘는 함수 정의다- 정의부분만 입력받아놓고 준비하라고 대기시켜놓는게 마운트 그리고 submit누르면(호출) 실행된다
         if(actionStatus === 1) {
             registerBookMutation.mutate({
                 isbn: isbn.value,
@@ -124,7 +124,7 @@ function BookManagement(props) {
             setDelete(() => true);
         }
 
-        cancel();
+        cancel();// 마운트 될떄 바로 실행되는 함수가 아니라 submit라는것을 눌렀을떄 실행된다
     }
 
     const cancel = () => {
@@ -139,6 +139,8 @@ function BookManagement(props) {
 
         setActionStatus(() => 0);
     }
+    // 보통 호출이 구현부보다 아래있지않나??
+    //호출이 선언보다 아래있어야하는이유는?? 왜냐면
     
     const bookId = useBookRegisterInput(nextInput, inputRefs[1]);
     const isbn = useBookRegisterInput(nextInput, inputRefs[2]);
